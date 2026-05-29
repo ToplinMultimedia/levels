@@ -2,803 +2,1459 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>TweetForge</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>XPAYOUT.BOT — 8-Day Algo Maximizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--r:12px;--r-sm:8px;--r-xs:6px;--ease:0.2s cubic-bezier(.4,0,.2,1)}
-[data-theme="dark"]{
-  --bg:#0d0e13;--bg2:#12131a;--surf:#191b23;--surf2:#1f2130;
-  --brd:#252836;--brd2:#2f3347;
-  --tx:#e4e6f0;--tx2:#8e90a4;--tx3:#4e5168;
-  --acc:#4f8ef7;--acc-bg:rgba(79,142,247,.11);--acc-glow:rgba(79,142,247,.28);
-  --grn:#1ec98e;--grn-bg:rgba(30,201,142,.1);
-  --red:#f76060;--red-bg:rgba(247,96,96,.1);
-  --amb:#f5a523;--amb-bg:rgba(245,165,35,.1);
-  --pur:#a07cf8;--pur-bg:rgba(160,124,248,.1);
-  --shd:0 4px 24px rgba(0,0,0,.45);--shd-lg:0 12px 48px rgba(0,0,0,.6);
-}
-[data-theme="light"]{
-  --bg:#f2f4fb;--bg2:#e8ebf5;--surf:#ffffff;--surf2:#eef0f8;
-  --brd:#dce0ef;--brd2:#c6ccdf;
-  --tx:#181a28;--tx2:#565a72;--tx3:#9296ac;
-  --acc:#2563eb;--acc-bg:rgba(37,99,235,.08);--acc-glow:rgba(37,99,235,.22);
-  --grn:#059669;--grn-bg:rgba(5,150,105,.08);
-  --red:#dc2626;--red-bg:rgba(220,38,38,.08);
-  --amb:#d97706;--amb-bg:rgba(217,119,6,.08);
-  --pur:#7c3aed;--pur-bg:rgba(124,58,237,.08);
-  --shd:0 4px 16px rgba(0,0,0,.09);--shd-lg:0 12px 40px rgba(0,0,0,.14);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:15px;-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;min-height:100dvh;transition:background var(--ease),color var(--ease);overscroll-behavior:none}
-button{cursor:pointer;font-family:inherit;border:none;outline:none;background:none}
-input,textarea{font-family:inherit;outline:none;border:none}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
-
-/* ── SHELL ── */
-.shell{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;max-width:1120px;margin:0 auto;padding:0 20px}
-
-/* ── TOPBAR ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0 12px;border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:200;background:var(--bg)}
-.brand{display:flex;align-items:center;gap:10px}
-.brand-icon{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,var(--acc),var(--pur));display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 14px var(--acc-glow)}
-.brand-name{font-size:1.05rem;font-weight:800;letter-spacing:-.3px;background:linear-gradient(120deg,var(--acc),var(--pur));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.brand-sub{font-size:.58rem;font-family:'DM Mono',monospace;color:var(--tx3);letter-spacing:.09em;margin-top:2px}
-.topbar-right{display:flex;align-items:center;gap:8px}
-.gen-count{padding:4px 10px;border-radius:20px;background:var(--surf);border:1px solid var(--brd);font-size:.68rem;font-family:'DM Mono',monospace;color:var(--tx2)}
-.gen-count b{color:var(--acc)}
-.theme-btn{width:32px;height:32px;border-radius:9px;background:var(--surf);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all var(--ease)}
-.theme-btn:hover{background:var(--surf2);border-color:var(--brd2)}
-
-/* ── BODY GRID ── */
-.body{display:grid;grid-template-columns:248px 1fr;gap:18px;padding:16px 0 40px;align-items:start}
-
-/* ── SIDEBAR ── */
-.sidebar{display:flex;flex-direction:column;gap:10px;position:sticky;top:60px;max-height:calc(100vh - 76px);overflow-y:auto;padding-right:2px}
-.sidebar::-webkit-scrollbar{display:none}
-
-/* ── CARD ── */
-.card{background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);padding:15px;transition:border-color var(--ease)}
-.card-hd{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.card-hd-dot{width:5px;height:5px;border-radius:50%;background:var(--acc);flex-shrink:0}
-
-/* ── CONTENT ── */
-.content{display:flex;flex-direction:column;gap:13px;min-width:0}
-
-/* ── NICHES ── */
-.niches{display:flex;flex-wrap:wrap;gap:6px}
-.niche-pill{padding:5px 11px;border-radius:20px;font-size:.74rem;font-weight:600;border:1.5px solid var(--brd);background:var(--bg);color:var(--tx2);transition:all var(--ease)}
-.niche-pill:hover{border-color:var(--acc);color:var(--acc);background:var(--acc-bg)}
-.niche-pill.active{background:var(--acc-bg);border-color:var(--acc);color:var(--acc)}
-
-/* ── FORMAT ── */
-.fmt-row{display:flex;gap:6px}
-.fmt-btn{flex:1;padding:8px 4px;border-radius:var(--r-sm);text-align:center;font-size:.74rem;font-weight:700;background:var(--bg);border:1.5px solid var(--brd);color:var(--tx2);transition:all var(--ease)}
-.fmt-btn.active{background:var(--acc-bg);border-color:var(--acc);color:var(--acc)}
-
-/* ── TONE ── */
-.tone-labels{display:flex;justify-content:space-between;margin-bottom:5px}
-.tone-lbl{font-size:.65rem;color:var(--tx3);font-family:'DM Mono',monospace}
-input[type=range]{width:100%;accent-color:var(--acc);cursor:pointer}
-
-/* ── KEYS ── */
-.key-grp{margin-bottom:9px}
-.key-lbl{display:flex;align-items:center;justify-content:space-between;font-size:.67rem;font-family:'DM Mono',monospace;color:var(--tx3);margin-bottom:4px}
-.key-dot{width:7px;height:7px;border-radius:50%;background:var(--tx3);transition:background .3s;flex-shrink:0}
-.key-dot.ok{background:var(--grn)}
-.key-dot.err{background:var(--red)}
-.key-dot.on{background:var(--acc);animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.key-inp{width:100%;background:var(--bg);border:1.5px solid var(--brd);border-radius:var(--r-sm);color:var(--tx);padding:8px 11px;font-size:.74rem;font-family:'DM Mono',monospace;transition:border-color var(--ease)}
-.key-inp:focus{border-color:var(--acc)}
-.key-inp::placeholder{color:var(--tx3)}
-.save-btn{width:100%;padding:9px;border-radius:var(--r-sm);background:var(--acc);color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.05em;transition:all var(--ease);margin-top:2px}
-.save-btn:hover{opacity:.88;box-shadow:0 0 18px var(--acc-glow)}
-.save-btn:active{transform:scale(.98)}
-
-/* ── TIPS ── */
-.tips{display:flex;flex-direction:column;gap:7px}
-.tip{display:flex;gap:7px;align-items:flex-start;font-size:.71rem;line-height:1.5}
-.tip-k{color:var(--acc);font-weight:700;min-width:70px;flex-shrink:0;font-size:.67rem}
-.tip-v{color:var(--tx2)}
-
-/* ── MODEL BAR ── */
-.model-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:8px 12px;border-radius:var(--r-sm);background:var(--surf2);border:1px solid var(--brd)}
-.mchip{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:.64rem;font-family:'DM Mono',monospace;letter-spacing:.04em;border:1px solid var(--brd);background:var(--surf);color:var(--tx3);transition:all .25s;white-space:nowrap}
-.mchip.active{border-color:var(--acc);background:var(--acc-bg);color:var(--acc)}
-.mchip.ok{border-color:var(--grn);background:var(--grn-bg);color:var(--grn)}
-.mchip.err{border-color:var(--red);background:var(--red-bg);color:var(--red)}
-.mdot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
-.mdot.spin{animation:blink .8s infinite}
-.mbar-lbl{margin-left:auto;font-size:.6rem;font-family:'DM Mono',monospace;color:var(--tx3);white-space:nowrap}
-
-/* ── PROMPT ── */
-.prompt-wrap{position:relative}
-.prompt-ta{width:100%;background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r);color:var(--tx);padding:13px 14px 44px;font-size:.88rem;line-height:1.65;resize:none;min-height:88px;transition:border-color var(--ease)}
-.prompt-ta:focus{border-color:var(--acc)}
-.prompt-ta::placeholder{color:var(--tx3)}
-.prompt-foot{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:7px 13px;border-top:1px solid var(--brd);font-size:.63rem;font-family:'DM Mono',monospace;color:var(--tx3)}
-
-/* ── GEN BTN ── */
-.gen-btn{width:100%;padding:14px;border-radius:var(--r);background:linear-gradient(135deg,var(--acc),var(--pur));color:#fff;font-size:.95rem;font-weight:800;letter-spacing:.03em;box-shadow:0 4px 20px var(--acc-glow);transition:all var(--ease);position:relative;overflow:hidden}
-.gen-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);transform:translateX(-100%);transition:transform .5s}
-.gen-btn:hover:not(:disabled)::after{transform:translateX(100%)}
-.gen-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px var(--acc-glow)}
-.gen-btn:active:not(:disabled){transform:translateY(0)}
-.gen-btn:disabled{background:var(--surf2);color:var(--tx3);box-shadow:none;cursor:not-allowed}
-.gen-inner{display:flex;align-items:center;justify-content:center;gap:8px}
-.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .65s linear infinite;flex-shrink:0}
-@keyframes rot{to{transform:rotate(360deg)}}
-
-/* ── ERROR LOG ── */
-.errlog{background:var(--red-bg);border:1px solid rgba(247,96,96,.3);border-radius:var(--r-sm);padding:10px 13px;font-size:.72rem;font-family:'DM Mono',monospace;color:var(--red);line-height:1.6;white-space:pre-wrap;word-break:break-word;display:none}
-.errlog.show{display:block}
-
-/* ── TWEET CARDS ── */
-.outputs{display:flex;flex-direction:column;gap:12px}
-.tweet-card{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r);padding:16px;animation:pop .28s ease;transition:border-color var(--ease)}
-.tweet-card:hover{border-color:var(--brd2)}
-.tweet-card.is-thread{border-left:3px solid var(--acc)}
-@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.tweet-meta{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:11px;gap:8px;flex-wrap:wrap}
-.tw-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:.69rem;font-weight:600;border:1px solid transparent}
-.tw-actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.char-badge{font-size:.63rem;padding:2px 7px;border-radius:4px;border:1px solid;font-family:'DM Mono',monospace}
-.via-tag{font-size:.59rem;padding:2px 7px;border-radius:4px;border:1px solid var(--brd);color:var(--tx3);font-family:'DM Mono',monospace}
-.action-btn{padding:5px 12px;border-radius:var(--r-xs);font-size:.71rem;font-weight:700;background:var(--bg);border:1.5px solid var(--brd);color:var(--tx2);transition:all var(--ease)}
-.action-btn:hover{border-color:var(--brd2);color:var(--tx)}
-.action-btn:active{transform:scale(.97)}
-.action-btn.copied{background:var(--grn-bg);border-color:var(--grn);color:var(--grn)}
-.action-btn.regen{color:var(--acc);border-color:var(--acc-bg);background:var(--acc-bg)}
-.action-btn.regen:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
-.tweet-body{font-size:.9rem;line-height:1.75;color:var(--tx);white-space:pre-wrap;word-break:break-word}
-.thread-list{display:flex;flex-direction:column}
-.th-tweet{display:flex;gap:9px;padding:11px 0;border-bottom:1px solid var(--brd)}
-.th-tweet:first-child{padding-top:0}
-.th-tweet:last-child{border-bottom:none;padding-bottom:0}
-.th-n{font-size:.63rem;font-family:'DM Mono',monospace;color:var(--acc);min-width:18px;padding-top:2px;font-weight:500}
-.th-txt{font-size:.87rem;line-height:1.7;color:var(--tx);white-space:pre-wrap;word-break:break-word}
-
-/* ── EMPTY ── */
-.empty{text-align:center;padding:44px 20px;border:2px dashed var(--brd);border-radius:var(--r);color:var(--tx3)}
-.empty-ico{font-size:2.6rem;margin-bottom:10px;opacity:.45}
-.empty-title{font-size:.95rem;font-weight:700;color:var(--tx2);margin-bottom:5px}
-.empty-sub{font-size:.74rem;font-family:'DM Mono',monospace;line-height:1.65}
-
-/* ── HISTORY ── */
-.hist-list{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow-y:auto}
-.hist-item{padding:7px 10px;border-radius:var(--r-xs);background:var(--bg);border:1px solid var(--brd);display:flex;align-items:center;gap:8px;cursor:pointer;transition:all var(--ease)}
-.hist-item:hover{border-color:var(--brd2)}
-.hist-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:.67rem;font-family:'DM Mono',monospace;color:var(--tx2)}
-.hist-time{font-size:.59rem;color:var(--tx3);flex-shrink:0;font-family:'DM Mono',monospace}
-
-/* ── INFO NOTE ── */
-.info-note{background:var(--acc-bg);border:1px solid rgba(79,142,247,.2);border-radius:var(--r-xs);padding:8px 10px;margin-bottom:10px;font-size:.67rem;font-family:'DM Mono',monospace;color:var(--tx2);line-height:1.6}
-.info-note a{color:var(--acc)}
-
-/* ── TOAST ── */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r-sm);padding:9px 18px;font-size:.78rem;font-weight:600;color:var(--tx);box-shadow:var(--shd-lg);opacity:0;transition:opacity .25s,transform .25s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ══════════════════════════════════════════
-   MOBILE — bottom tab nav
-══════════════════════════════════════════ */
-@media(max-width:767px){
-  .shell{padding:0;max-width:100%}
-
-  .topbar{padding:12px 14px 10px;position:fixed;top:0;left:0;right:0;border-radius:0}
-
-  .body{
-    display:flex;flex-direction:column;
-    padding:0;
-    margin-top:58px;
-    padding-bottom:72px;
-    gap:0;
-  }
-
-  /* sidebar panels hidden by default, shown one at a time */
-  .sidebar{
-    position:static;max-height:none;overflow:visible;
-    padding:14px 14px 0;gap:10px;
-    display:none;
-  }
-  .sidebar.mob-show{display:flex}
-
-  /* individual cards inside sidebar toggled */
-  .s-keys,.s-niche,.s-format,.s-tips{display:none!important}
-  .s-keys.show,.s-niche.show,.s-format.show,.s-tips.show{display:block!important}
-
-  /* content col */
-  .content{padding:12px 14px 0;display:none}
-  .content.mob-show{display:flex}
-
-  /* model bar scrolls */
-  .model-bar{overflow-x:auto;flex-wrap:nowrap;padding:8px 14px}
-
-  /* bigger touch */
-  .niche-pill{padding:9px 13px;font-size:.8rem}
-  .fmt-btn{padding:12px 4px;font-size:.8rem}
-  .key-inp{padding:11px 12px;font-size:.82rem}
-  .save-btn{padding:13px;font-size:.84rem}
-  .gen-btn{padding:17px;font-size:1rem}
-  .action-btn{padding:8px 14px;font-size:.78rem}
-  .tweet-body{font-size:.92rem}
-  .prompt-ta{font-size:.88rem}
-
-  /* bottom nav */
-  .mob-nav{
-    display:flex;position:fixed;bottom:0;left:0;right:0;
-    background:var(--surf);border-top:1px solid var(--brd);
-    z-index:300;padding-bottom:env(safe-area-inset-bottom,0px);
-  }
-  .mob-nb{
-    flex:1;display:flex;flex-direction:column;align-items:center;
-    gap:2px;padding:9px 4px 8px;
-    font-size:.56rem;font-weight:700;letter-spacing:.07em;
-    color:var(--tx3);transition:color var(--ease);text-transform:uppercase;
-  }
-  .mob-nb .ni{font-size:18px;line-height:1}
-  .mob-nb.active{color:var(--acc)}
-
-  .toast{bottom:82px}
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --accent: #00c896;
+  --accent-dim: rgba(0,200,150,0.12);
+  --accent-mid: rgba(0,200,150,0.28);
+  --accent-glow: 0 0 18px rgba(0,200,150,0.35);
+  --red: #f03e5e;
+  --yellow: #f5a623;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --pink: #ec4899;
+  --cyan: #06b6d4;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --transition: 0.18s cubic-bezier(.4,0,.2,1);
+  --font-mono: 'DM Mono', monospace;
+  --font-sans: 'Syne', sans-serif;
+  --font-display: 'Bebas Neue', sans-serif;
 }
 
-@media(min-width:768px){
-  .mob-nav{display:none}
-  .sidebar{display:flex!important}
-  .content{display:flex!important}
-  .s-keys,.s-niche,.s-format,.s-tips{display:block!important}
+/* ── DARK THEME ── */
+[data-theme="dark"] {
+  --bg:       #0a0a0f;
+  --bg2:      #0f0f18;
+  --bg3:      #141420;
+  --surface:  #181825;
+  --surface2: #1e1e2e;
+  --border:   #252535;
+  --border2:  #2e2e42;
+  --text:     #e2e2f0;
+  --text2:    #9898b8;
+  --text3:    #555570;
+  --shadow:   0 2px 12px rgba(0,0,0,0.5);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.6);
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"] {
+  --bg:       #f4f4f8;
+  --bg2:      #eeeef4;
+  --bg3:      #e8e8f0;
+  --surface:  #ffffff;
+  --surface2: #f8f8fc;
+  --border:   #dcdce8;
+  --border2:  #c8c8dc;
+  --text:     #18182a;
+  --text2:    #555570;
+  --text3:    #9898b8;
+  --shadow:   0 2px 10px rgba(0,0,0,0.08);
+  --shadow-lg:0 8px 28px rgba(0,0,0,0.12);
+  --accent-dim: rgba(0,200,150,0.10);
+  --accent-mid: rgba(0,200,150,0.22);
+}
+
+/* ═══════════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  transition: background var(--transition), color var(--transition);
+  -webkit-font-smoothing: antialiased;
+}
+button { cursor: pointer; }
+textarea, input { font-family: var(--font-mono); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.app { max-width: 760px; margin: 0 auto; padding-bottom: 60px; }
+
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+  gap: 12px;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  line-height: 1;
+}
+[data-theme="dark"] .logo { text-shadow: var(--accent-glow); }
+.logo-sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: 1.5px;
+  margin-top: 2px;
+  line-height: 1;
+}
+.header-right { display: flex; align-items: center; gap: 10px; }
+.stat-box { text-align: right; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: 2px;
+}
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* ═══════════════════════════════════════════
+   MODEL STATUS BAR
+═══════════════════════════════════════════ */
+.model-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  overflow-x: auto;
+  flex-wrap: wrap;
+}
+.model-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--border2);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  color: var(--text3);
+  background: var(--surface);
+  transition: all var(--transition);
+  user-select: none;
+}
+.model-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+.model-chip.error {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(240,62,94,0.08);
+}
+.model-chip.ok { color: var(--text2); }
+.mdot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.mdot.pulse { animation: mdotPulse 1.1s infinite; }
+@keyframes mdotPulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.3;transform:scale(0.6)}
+}
+.auto-tag {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: 1px;
+  white-space: nowrap;
+  padding-left: 8px;
+}
+
+/* ═══════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════ */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 67px;
+  z-index: 90;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 6px;
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition);
+}
+.tab-btn:hover:not(.active) { color: var(--text2); background: var(--surface2); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   PANELS
+═══════════════════════════════════════════ */
+.panel { display: none; padding: 20px; animation: panelIn 0.22s ease; }
+.panel.active { display: block; }
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════════════ */
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.field-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.field-wrap { margin-bottom: 18px; }
+
+.inp {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  resize: vertical;
+}
+.inp:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.inp::placeholder { color: var(--text3); }
+
+/* ═══════════════════════════════════════════
+   PILLARS GRID
+═══════════════════════════════════════════ */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 7px;
+  margin-bottom: 18px;
+}
+.pillar-chip {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+  user-select: none;
+}
+.pillar-chip:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.pillar-chip.sel { font-weight: 500; }
+
+/* ═══════════════════════════════════════════
+   FORMAT SELECTOR
+═══════════════════════════════════════════ */
+.fmt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+.fmt-card {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border2);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.fmt-card:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.fmt-card.sel { border-color: var(--accent); background: var(--accent-dim); }
+.fmt-name {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.fmt-card.sel .fmt-name { color: var(--accent); }
+.fmt-desc {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text3);
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════
+   GENERATE BUTTON
+═══════════════════════════════════════════ */
+.btn-generate {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+[data-theme="dark"] .btn-generate { color: #001a12; }
+.btn-generate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+.btn-generate:hover:not(:disabled)::after { transform: translateX(100%); }
+.btn-generate:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--accent-glow);
+  background: #00dda6;
+}
+.btn-generate:active:not(:disabled) { transform: translateY(0); }
+.btn-generate:disabled {
+  background: var(--surface2);
+  color: var(--text3);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+.btn-generate:disabled::after { display: none; }
+
+/* ── SPINNER ── */
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid rgba(0,0,0,0.15);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════
+   OUTPUT CARD
+═══════════════════════════════════════════ */
+.output-card {
+  background: var(--surface);
+  border: 1.5px solid var(--accent-mid);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  animation: cardIn 0.25s ease;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.output-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.output-pillar-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  border: 1px solid;
+}
+.output-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.char-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  border: 1px solid;
+  letter-spacing: 0.8px;
+}
+.output-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.output-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+.algo-badge {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  letter-spacing: 0.8px;
+}
+.algo-badge.green { background: var(--accent-dim); border: 1px solid var(--accent-mid); color: var(--accent); }
+.algo-badge.warn  { background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.25); color: var(--yellow); }
+.provider-badge {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.25);
+  color: var(--blue);
+  letter-spacing: 0.8px;
+  margin-left: auto;
+}
+
+/* ── CURSOR ── */
+.cursor { animation: blink 0.65s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── SMALL BUTTONS ── */
+.btn-sm {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text2);
+  transition: all var(--transition);
+}
+.btn-sm:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.btn-sm.copied { background: var(--accent); border-color: var(--accent); color: #001a12; }
+.btn-sm.danger:hover { border-color: var(--red); color: var(--red); background: rgba(240,62,94,0.08); }
+
+/* ═══════════════════════════════════════════
+   SCHEDULE
+═══════════════════════════════════════════ */
+.days-scroll {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 14px;
+}
+.day-pill {
+  flex-shrink: 0;
+  min-width: 52px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border2);
+  background: var(--surface);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.day-pill:hover { border-color: var(--accent); }
+.day-pill.sel { border-color: var(--accent); background: var(--accent-dim); }
+.day-num {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--text2);
+  line-height: 1;
+}
+.day-pill.sel .day-num { color: var(--accent); }
+.day-name {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--text3);
+  margin-top: 1px;
+  letter-spacing: 1px;
+}
+.day-pill.sel .day-name { color: var(--accent); opacity: 0.7; }
+
+.btn-allday {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--accent-mid);
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  transition: all var(--transition);
+  margin-bottom: 14px;
+}
+.btn-allday:hover:not(:disabled) { background: var(--accent); color: #001a12; }
+.btn-allday:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.slot-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.slot-card:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.slot-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.slot-time {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.slot-pillar {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  border: 1px solid;
+  letter-spacing: 0.5px;
+}
+.slot-actions { display: flex; gap: 5px; align-items: center; }
+.slot-body {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+}
+.slot-empty { color: var(--text3); font-style: italic; }
+.slot-gen { color: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   STRATEGY
+═══════════════════════════════════════════ */
+.strat-section {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.strat-title {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.strat-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+.strat-key {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  min-width: 90px;
+  padding-top: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.strat-val {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.rotation-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.rot-day {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text3);
+  min-width: 55px;
+  letter-spacing: 0.5px;
+}
+.rot-pillar {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 9px;
+  border-radius: 99px;
+  border: 1px solid;
+  letter-spacing: 0.3px;
+}
+.rot-note { font-family: var(--font-mono); font-size: 9px; color: var(--text3); }
+.kill-row {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 8px;
+  align-items: flex-start;
+}
+.kill-x { color: var(--red); font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+.kill-txt { font-family: var(--font-sans); font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* ═══════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════ */
+.info-box {
+  background: rgba(59,130,246,0.07);
+  border: 1.5px solid rgba(59,130,246,0.2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+.info-box p {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+.info-box a { color: var(--blue); text-decoration: none; }
+.info-box a:hover { text-decoration: underline; }
+.key-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.key-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text2);
+  letter-spacing: 1.5px;
+  min-width: 80px;
+  text-transform: uppercase;
+}
+.key-inp {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface);
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.key-inp:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+
+.model-info-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 16px;
+}
+.model-chain-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.model-chain-row:last-of-type { border-bottom: none; }
+.chain-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  color: var(--text3);
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.chain-arrow { color: var(--text3); font-size: 9px; }
+.chain-model { color: var(--text2); font-size: 10px; }
+
+.btn-save {
+  padding: 10px 24px;
+  background: var(--accent);
+  color: #001a12;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  transition: all var(--transition);
+  margin-top: 8px;
+}
+.btn-save:hover { background: #00dda6; box-shadow: var(--accent-glow); }
+.save-msg {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  margin-top: 6px;
+  display: none;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 520px) {
+  html { font-size: 14px; }
+  .header { padding: 10px 14px; }
+  .logo { font-size: 20px; letter-spacing: 2px; }
+  .stat-num { font-size: 22px; }
+  .panel { padding: 14px; }
+  .tabs { top: 59px; }
+  .pillars-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .tab-btn { font-size: 9px; padding: 10px 3px; letter-spacing: 0.8px; }
+  .model-bar { padding: 7px 14px; }
+  .auto-tag { display: none; }
+  .btn-generate { font-size: 13px; padding: 13px; }
+  .output-text { font-size: 12px; }
+  .strat-row { flex-direction: column; gap: 3px; }
+  .strat-key { min-width: unset; }
+  .key-row { flex-direction: column; align-items: flex-start; }
+  .key-inp { width: 100%; }
+}
+
+@media (min-width: 640px) {
+  .slot-card { padding: 16px; }
+  .output-card { padding: 20px; }
+  .panel { padding: 24px; }
 }
 </style>
 </head>
 <body>
-<div class="shell">
+<div class="app" id="app">
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-icon">✦</div>
+  <!-- ══ HEADER ══ -->
+  <header class="header">
+    <div class="header-left">
       <div>
-        <div class="brand-name">TweetForge</div>
-        <div class="brand-sub">X PAYOUT BOT · GROQ LLAMA</div>
+        <div class="logo">XPAYOUT.BOT</div>
+        <div class="logo-sub">GROQ · 3-MODEL CHAIN · ALGO 2026</div>
       </div>
     </div>
-    <div class="topbar-right">
-      <div class="gen-count" id="genCount"><b>0</b> tweets</div>
-      <button class="theme-btn" id="themeBtn">🌙</button>
+    <div class="header-right">
+      <div class="stat-box">
+        <div class="stat-num" id="totalCount">0</div>
+        <div class="stat-lbl">GENERATED</div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme" onclick="toggleTheme()">☀️</button>
     </div>
   </header>
 
-  <div class="body">
+  <!-- ══ MODEL STATUS BAR ══ -->
+  <div class="model-bar">
+    <div class="model-chip ok" id="chip-1">
+      <div class="mdot"></div> llama-4-scout
+    </div>
+    <div class="model-chip ok" id="chip-2">
+      <div class="mdot"></div> llama-3.3-70b
+    </div>
+    <div class="model-chip ok" id="chip-3">
+      <div class="mdot"></div> mixtral-8x7b
+    </div>
+    <div class="auto-tag">AUTO-FALLBACK ON</div>
+  </div>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
+  <!-- ══ TABS ══ -->
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('gen')">⚡ GENERATE</button>
+    <button class="tab-btn" onclick="switchTab('sched')">📅 8-DAY PLAN</button>
+    <button class="tab-btn" onclick="switchTab('strat')">🧠 STRATEGY</button>
+    <button class="tab-btn" onclick="switchTab('settings')">⚙ KEYS</button>
+  </nav>
 
-      <div class="card s-keys" id="sKeys">
-        <div class="card-hd"><span class="card-hd-dot"></span>GROQ API KEYS</div>
-        <div class="info-note">
-          Get free keys: <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a><br>
-          3 keys = triple rate-limit protection
-        </div>
-        <div class="key-grp">
-          <div class="key-lbl">Key 1 — Primary <span class="key-dot" id="kd1"></span></div>
-          <input class="key-inp" type="password" id="k1" placeholder="gsk_..." autocomplete="off"/>
-        </div>
-        <div class="key-grp">
-          <div class="key-lbl">Key 2 — Fallback <span class="key-dot" id="kd2"></span></div>
-          <input class="key-inp" type="password" id="k2" placeholder="gsk_..." autocomplete="off"/>
-        </div>
-        <div class="key-grp">
-          <div class="key-lbl">Key 3 — Reserve <span class="key-dot" id="kd3"></span></div>
-          <input class="key-inp" type="password" id="k3" placeholder="gsk_..." autocomplete="off"/>
-        </div>
-        <button class="save-btn" onclick="saveKeys()">SAVE KEYS</button>
+  <!-- ══════════════════════════════════════
+       GENERATE PANEL
+  ══════════════════════════════════════ -->
+  <div class="panel active" id="panel-gen">
+
+    <div class="field-label">Content Pillar</div>
+    <div class="pillars-grid" id="pillarGrid"></div>
+
+    <div class="field-label">Format</div>
+    <div class="fmt-grid">
+      <div class="fmt-card sel" id="fmt-single" onclick="selectFmt('single')">
+        <div class="fmt-name">Single Tweet</div>
+        <div class="fmt-desc">Hard hook · reply-bait · max punch</div>
       </div>
-
-      <div class="card s-niche" id="sNiche">
-        <div class="card-hd"><span class="card-hd-dot"></span>CONTENT NICHE</div>
-        <div class="niches" id="nicheGrid"></div>
+      <div class="fmt-card" id="fmt-thread" onclick="selectFmt('thread')">
+        <div class="fmt-name">Thread × 5</div>
+        <div class="fmt-desc">3× impressions · bookmark-worthy</div>
       </div>
+    </div>
 
-      <div class="card s-format" id="sFormat">
-        <div class="card-hd"><span class="card-hd-dot"></span>FORMAT</div>
-        <div class="fmt-row" style="margin-bottom:14px">
-          <button class="fmt-btn active" id="fmtA" onclick="setFmt('single')">Single</button>
-          <button class="fmt-btn" id="fmtB" onclick="setFmt('thread')">Thread ×5</button>
-        </div>
-        <div class="card-hd" style="margin-top:2px"><span class="card-hd-dot"></span>TONE DIAL</div>
-        <div class="tone-labels">
-          <span class="tone-lbl">Casual</span>
-          <span class="tone-lbl" id="toneVal">50%</span>
-          <span class="tone-lbl">Sharp</span>
-        </div>
-        <input type="range" id="toneSlider" min="0" max="100" value="50"
-          oninput="document.getElementById('toneVal').textContent=this.value+'%'"/>
-      </div>
+    <div class="field-label">Specific Angle / Topic <span style="color:var(--text3);font-size:9px;letter-spacing:1px">(OPTIONAL)</span></div>
+    <div class="field-wrap">
+      <textarea class="inp" id="customPrompt" rows="3"
+        placeholder="e.g. 'AI agents replacing Nigerian call-centre jobs' — or leave blank and let the model pick the sharpest angle..."></textarea>
+    </div>
 
-      <div class="card s-tips" id="sTips">
-        <div class="card-hd"><span class="card-hd-dot"></span>ALGO RULES 2026</div>
-        <div class="tips">
-          <div class="tip"><span>⚡</span><span class="tip-k">30-min</span><span class="tip-v">Reply every comment fast after posting</span></div>
-          <div class="tip"><span>📌</span><span class="tip-k">Bookmarks</span><span class="tip-v">10× algo weight — write save-worthy stuff</span></div>
-          <div class="tip"><span>💬</span><span class="tip-k">Replies</span><span class="tip-v">27× stronger than likes — end with a question</span></div>
-          <div class="tip"><span>🚫</span><span class="tip-k">No links</span><span class="tip-v">URLs in first reply only, not main tweet</span></div>
-          <div class="tip"><span>🚫</span><span class="tip-k">No hashtags</span><span class="tip-v">Algo reads as spam signal in 2026</span></div>
-          <div class="tip"><span>🧵</span><span class="tip-k">Threads</span><span class="tip-v">Auto 3× impressions boost</span></div>
-          <div class="tip"><span>🕗</span><span class="tip-k">Post times</span><span class="tip-v">7AM · 12:30PM · 8PM daily, no skips</span></div>
-        </div>
-      </div>
+    <button class="btn-generate" id="mainGenBtn" onclick="handleGenerate()">
+      ⚡ GENERATE TWEET
+    </button>
 
-    </aside>
+    <div id="mainOutput" style="display:none"></div>
+  </div>
 
-    <!-- CONTENT -->
-    <div class="content mob-show" id="content">
+  <!-- ══════════════════════════════════════
+       SCHEDULE PANEL
+  ══════════════════════════════════════ -->
+  <div class="panel" id="panel-sched">
+    <div class="field-label">Select Day</div>
+    <div class="days-scroll" id="daysRow"></div>
 
-      <div class="model-bar" id="modelBar">
-        <div class="mchip" id="mc0"><div class="mdot"></div>llama-4-scout</div>
-        <div class="mchip" id="mc1"><div class="mdot"></div>llama-3.3-70b</div>
-        <div class="mchip" id="mc2"><div class="mdot"></div>llama-3.1-8b</div>
-        <span class="mbar-lbl">AUTO FALLBACK</span>
-      </div>
+    <button class="btn-allday" id="allDayBtn" onclick="generateAllDay()">
+      ⚡ GENERATE ALL 3 SLOTS FOR THIS DAY
+    </button>
 
-      <div class="prompt-wrap">
-        <textarea class="prompt-ta" id="promptInput" rows="3"
-          placeholder="Optional: specific angle or topic… or leave blank for a surprise."></textarea>
-        <div class="prompt-foot">
-          <span id="nicheLabel">Niche: Auto-rotate</span>
-          <span id="fmtLabel">Format: Single</span>
-        </div>
-      </div>
+    <div id="slotsContainer"></div>
+  </div>
 
-      <button class="gen-btn" id="genBtn" onclick="handleGenerate()">
-        <div class="gen-inner" id="genInner"><span>✦</span><span>GENERATE TWEET</span></div>
-      </button>
-
-      <!-- error log visible to user -->
-      <div class="errlog" id="errLog"></div>
-
-      <div class="outputs" id="outputArea">
-        <div class="empty" id="emptyState">
-          <div class="empty-ico">✦</div>
-          <div class="empty-title">Ready to forge</div>
-          <div class="empty-sub">Save a Groq key · pick a niche<br>hit generate · sounds human · hits different</div>
-        </div>
-      </div>
-
-      <div class="card" id="histCard" style="display:none">
-        <div class="card-hd">
-          <span class="card-hd-dot"></span>RECENT
-          <span style="margin-left:auto;font-size:.63rem;cursor:pointer;color:var(--red)" onclick="clearHist()">CLEAR</span>
-        </div>
-        <div class="hist-list" id="histList"></div>
-      </div>
-
+  <!-- ══════════════════════════════════════
+       STRATEGY PANEL
+  ══════════════════════════════════════ -->
+  <div class="panel" id="panel-strat">
+    <div class="strat-section" style="border-color:var(--accent-mid)">
+      <div class="strat-title" style="color:var(--accent)">⚡ 8-Day Payout Playbook</div>
+      <div id="playbookRows"></div>
+    </div>
+    <div class="strat-section">
+      <div class="strat-title" style="color:var(--yellow)">📅 Pillar Rotation</div>
+      <div id="rotationRows"></div>
+    </div>
+    <div class="strat-section" style="border-color:rgba(240,62,94,0.25)">
+      <div class="strat-title" style="color:var(--red)">⚠ Reach Killers — Never Do These</div>
+      <div id="killRows"></div>
     </div>
   </div>
-</div>
 
-<!-- MOBILE BOTTOM NAV -->
-<nav class="mob-nav" id="mobNav">
-  <button class="mob-nb active" id="mn-gen" onclick="mobTab('gen')"><span class="ni">✦</span>Generate</button>
-  <button class="mob-nb" id="mn-niche" onclick="mobTab('niche')"><span class="ni">🎯</span>Niche</button>
-  <button class="mob-nb" id="mn-format" onclick="mobTab('format')"><span class="ni">📝</span>Format</button>
-  <button class="mob-nb" id="mn-keys" onclick="mobTab('keys')"><span class="ni">🔑</span>Keys</button>
-  <button class="mob-nb" id="mn-tips" onclick="mobTab('tips')"><span class="ni">💡</span>Tips</button>
-</nav>
+  <!-- ══════════════════════════════════════
+       SETTINGS PANEL
+  ══════════════════════════════════════ -->
+  <div class="panel" id="panel-settings">
+    <div class="info-box">
+      <p>
+        Only your <strong>Groq API key</strong> is needed. All 3 models run on Groq — the bot auto-falls back to the next model if one hits a rate limit or errors.<br><br>
+        Get a free key at <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a>. Keys are saved in your browser only — never sent anywhere except Groq.
+      </p>
+    </div>
 
-<div class="toast" id="toast"></div>
+    <div class="field-label">Groq API Key</div>
+    <div class="key-row" style="margin-bottom:16px">
+      <span class="key-label">API KEY</span>
+      <input class="key-inp" type="password" id="key-groq" placeholder="gsk_..." autocomplete="off">
+    </div>
+
+    <button class="btn-save" onclick="saveKeys()">SAVE KEY</button>
+    <div class="save-msg" id="saveMsg">✓ Saved locally in your browser</div>
+
+    <div class="model-info-card" style="margin-top:20px">
+      <div class="strat-title" style="color:var(--text2);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+        Model Fallback Chain
+      </div>
+      <div class="model-chain-row">
+        <div class="chain-num" style="background:var(--accent-dim);border-color:var(--accent-mid);color:var(--accent)">1</div>
+        <span style="color:var(--accent);font-size:10px">PRIMARY</span>
+        <span class="chain-arrow">›</span>
+        <span class="chain-model">meta-llama/llama-4-scout-17b-16e-instruct</span>
+      </div>
+      <div class="model-chain-row">
+        <div class="chain-num" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.25);color:var(--blue)">2</div>
+        <span style="color:var(--blue);font-size:10px">FALLBACK 1</span>
+        <span class="chain-arrow">›</span>
+        <span class="chain-model">llama-3.3-70b-versatile</span>
+      </div>
+      <div class="model-chain-row">
+        <div class="chain-num" style="background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.25);color:var(--purple)">3</div>
+        <span style="color:var(--purple);font-size:10px">FALLBACK 2</span>
+        <span class="chain-arrow">›</span>
+        <span class="chain-model">mixtral-8x7b-32768</span>
+      </div>
+      <div style="margin-top:10px;font-family:var(--font-mono);font-size:9px;color:var(--text3);line-height:1.7">
+        All 3 models run on Groq's infrastructure. If model 1 rate-limits or errors, model 2 kicks in automatically. If model 2 also fails, model 3 takes over. Zero manual switching needed.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
 
 <script>
-/* ══ DATA ══════════════════════════════════════════════ */
-const NICHES=[
-  {id:'auto', label:'🔄 Auto-Rotate',color:'#4f8ef7'},
-  {id:'tech', label:'🔥 Tech Takes', color:'#f76060'},
-  {id:'ai',   label:'🤖 AI & Future',color:'#a07cf8'},
-  {id:'money',label:'💰 Money Moves',color:'#1ec98e'},
-  {id:'dev',  label:'👨‍💻 Dev Life',   color:'#f5a523'},
-  {id:'naija',label:'🇳🇬 Naija Tech', color:'#4f8ef7'},
-  {id:'life', label:'🧠 Life Hustle', color:'#f76060'},
-  {id:'viral',label:'📈 Viral Hook',  color:'#a07cf8'},
-  {id:'story',label:'📖 Story Time',  color:'#1ec98e'},
+/* ════════════════════════════════════════════
+   CONSTANTS
+════════════════════════════════════════════ */
+const PILLARS = [
+  { id:1, label:'🔥 Tech Hot Take',    color:'#f03e5e' },
+  { id:2, label:'💰 Money & Hustle',   color:'#00c896' },
+  { id:3, label:'😤 Dev Life',         color:'#8b5cf6' },
+  { id:4, label:'🇳🇬 Naija + Tech',    color:'#3b82f6' },
+  { id:5, label:'❓ Viral Thread',     color:'#f5a623' },
+  { id:6, label:'📖 Story + Lesson',   color:'#ec4899' },
+  { id:7, label:'⚡ News React',       color:'#06b6d4' },
 ];
 
-// Groq model names — verified working as of 2026
-const MODELS=[
-  {id:'mc0',name:'meta-llama/llama-4-scout-17b-16e-instruct',label:'llama-4-scout'},
-  {id:'mc1',name:'llama-3.3-70b-versatile',                  label:'llama-3.3-70b'},
-  {id:'mc2',name:'llama-3.1-8b-instant',                     label:'llama-3.1-8b'},
+const GROQ_MODELS = [
+  { id:'m1', name:'meta-llama/llama-4-scout-17b-16e-instruct', chip:'chip-1' },
+  { id:'m2', name:'llama-3.3-70b-versatile',                   chip:'chip-2' },
+  { id:'m3', name:'mixtral-8x7b-32768',                        chip:'chip-3' },
 ];
 
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const TIMES = ['7:00 AM', '12:30 PM', '8:00 PM'];
+const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const TODAY = new Date().getDay();
 
-const SYSTEM_PROMPT=`You are a real Nigerian tech creator who has been posting on X for years. You've lived through broke dev phases, client wahala, failed product launches, online hustle wins. You type fast from your phone. You sound like a person, never a brand.
+const PLAYBOOK = [
+  { k:'POST TIMES',     v:'7AM · 12:30PM · 8PM Lagos time — 3 posts daily, no skips ever' },
+  { k:'FIRST 30 MIN',   v:'Stay online after posting. Reply to every comment. Velocity signals the algo to keep pushing it.' },
+  { k:'THREADS',        v:'At least 1 thread per day. Algo gives automatic 3× impressions to threads over single tweets.' },
+  { k:'BOOKMARKS',      v:'10× algo weight. Lists, tools, frameworks, tips = saves. One bookmark beats ten likes.' },
+  { k:'REPLIES',        v:'27× stronger than likes. End every tweet with a direct question people feel compelled to answer.' },
+  { k:'NO LINKS',       v:'Put URLs in first reply, never in main tweet. Links in body destroy reach completely.' },
+  { k:'NO HASHTAGS',    v:'2026 algo treats hashtags as spam signals. Drop them across all posts.' },
+  { k:'VERIFIED REPLIES',v:'Chase engagement from Premium users. They carry more weight in both algo rank and payout calculation.' },
+];
 
-NON-NEGOTIABLE RULES:
-1. ZERO AI phrases: "In today's digital landscape", "It's worth noting", "As we navigate", "dive deep", "game-changer", "leverage", "synergy", "delve", "tapestry", "paradigm" — ban all of it forever.
-2. Vary sentence length wildly. Short. Then one that breathes longer. Then abrupt. Never the same pattern twice.
-3. Never two tweets with the same opening structure.
-4. No em-dashes (—) as connectors. Real people don't write that way on X.
-5. ZERO hashtags. ZERO external links in tweet body. Hard rule.
-6. Always use contractions. "don't" not "do not". "it's" not "it is". "y'all" is fine.
-7. Grammar can be slightly fast and loose — like a voice note typed out. Not broken, just real.
-8. NEVER open with: "So,", "Look,", "Here's the thing", "Let me be honest", "Unpopular opinion:", "Hot take:" — dead giveaways.
-9. The tweet MUST earn a reply. End with a real question people feel forced to answer, or a statement so incomplete people jump in.
-10. Write like you lived it or watched it happen. Not like you researched it.
-11. Single tweet: 230-275 characters MAX. Tight. Every word earns its place.
-12. Thread (5 tweets): format as 1/ 2/ 3/ 4/ 5/ — first tweet is the scroll-stopper hook, last tweet is a direct question or CTA. Each tweet is a complete thought.
+const KILL_LIST = [
+  'Putting external links in the main tweet body',
+  'Using hashtags — flags as spam in the 2026 algo',
+  'Going offline after posting — stay and reply for 30 min',
+  'Robotic, AI-sounding copy (Grok detects and suppresses it)',
+  'Skipping posting days (suppression penalty lasts 48–72 hrs)',
+  'Replying to trolls/bait (tanks your author reputation score)',
+];
 
-OUTPUT: Just the tweet or thread text. Nothing else. No intro. No quotes wrapping it. No "Here is your tweet:".`;
+/* ════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════ */
+let selPillar   = PILLARS[0];
+let selFmt      = 'single';
+let activeDay   = 0;
+let isGenerating = false;
+let genSlot      = null;
+let totalGen     = 0;
 
-const ANGLES={
-  auto:()=>['hot tech take that splits the timeline','money move most Nigerians don\'t know yet','dev life truth that every junior will screenshot','AI angle that hits different from Lagos','how Africans use the internet differently'][Math.floor(Math.random()*5)],
-  tech:()=>'a specific take on current tech — a product, company, trend, or decision that is either brilliant or completely stupid',
-  ai:()=>'something about AI changing jobs, income, or creativity — especially how it plays out differently in Nigeria',
-  money:()=>'a money move, fintech shift, or online income pattern most Nigerians are sleeping on or getting wrong',
-  dev:()=>'raw honest dev experience — the gap between tutorials and real client work, or the mental weight of the tech hustle',
-  naija:()=>'Nigerian or African internet culture, startup energy, or how we adopt tech differently from the rest of the world',
-  life:()=>'a life or hustle observation in disguise — something true that most people feel but nobody has said clearly yet',
-  viral:()=>'engineered to get maximum replies — pick a real side on a real debate, controversial but not offensive, people HAVE to respond',
-  story:()=>'personal story that starts mid-scene — no setup, just drop in. End with a lesson worth bookmarking',
-};
+const schedule = Array.from({length:8}, (_,i) => ({
+  day: i+1,
+  label: DAY_NAMES[(TODAY+i)%7],
+  slots: TIMES.map((time,j) => ({
+    time,
+    pillar: PILLARS[(i*3+j) % PILLARS.length],
+    tweet: null,
+    generating: false,
+    provider: null,
+  }))
+}));
 
-function buildUserMsg(niche,fmt,tone,custom){
-  const tDesc=tone<30?'very casual, like a fast voice note':tone>70?'sharp and direct, no softening':'natural, conversational but pointed';
-  const angle=ANGLES[niche]?.()??ANGLES.auto();
-  const angleStr=custom?.trim()?`Specific angle to work in: "${custom.trim()}"`:`Fresh angle: ${angle}`;
-  return `Write a ${fmt==='thread'?'5-tweet thread':'single tweet'} for a Nigerian tech creator on X.\nTone: ${tDesc}.\n${angleStr}\n\nMake it sound like a real person, not content.`;
+/* ════════════════════════════════════════════
+   THEME
+════════════════════════════════════════════ */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeToggle').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('xbot_theme', isDark ? 'light' : 'dark');
+}
+function loadTheme() {
+  const saved = localStorage.getItem('xbot_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeToggle').textContent = saved === 'dark' ? '☀️' : '🌙';
 }
 
-/* ══ STATE ══════════════════════════════════════════════ */
-let selNiche='auto',selFmt='single',totalCount=0,isGen=false;
-let hist=JSON.parse(localStorage.getItem('tf_h')||'[]');
-let mobActive='gen';
-
-/* ══ INIT ═══════════════════════════════════════════════ */
-function init(){
-  renderNiches();loadKeys();renderHist();loadTheme();
-  document.getElementById('themeBtn').addEventListener('click',toggleTheme);
-  if(window.innerWidth<768) mobTab('gen',false);
+/* ════════════════════════════════════════════
+   TABS
+════════════════════════════════════════════ */
+function switchTab(id) {
+  const ids = ['gen','sched','strat','settings'];
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', ids[i]===id));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='sched') { renderDays(); renderSlots(); }
 }
 
-/* ══ THEME ══════════════════════════════════════════════ */
-function loadTheme(){
-  const t=localStorage.getItem('tf_theme')||'dark';
-  document.documentElement.setAttribute('data-theme',t);
-  document.getElementById('themeBtn').textContent=t==='dark'?'☀️':'🌙';
+/* ════════════════════════════════════════════
+   RENDER — PILLARS
+════════════════════════════════════════════ */
+function renderPillars() {
+  document.getElementById('pillarGrid').innerHTML = PILLARS.map(p => `
+    <div class="pillar-chip ${p.id===selPillar.id?'sel':''}"
+      onclick="selectPillar(${p.id})"
+      style="${p.id===selPillar.id
+        ? `border-color:${p.color};background:${p.color}18;color:${p.color}`
+        : ''}">
+      ${p.label}
+    </div>`).join('');
 }
-function toggleTheme(){
-  const cur=document.documentElement.getAttribute('data-theme');
-  const next=cur==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',next);
-  document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
-  localStorage.setItem('tf_theme',next);
-}
-
-/* ══ MOBILE TABS ════════════════════════════════════════ */
-function mobTab(tab,save=true){
-  if(window.innerWidth>=768)return;
-  if(save) mobActive=tab;
-  // nav highlight
-  document.querySelectorAll('.mob-nb').forEach(b=>{
-    b.classList.toggle('active',b.id==='mn-'+tab);
-  });
-  const sb=document.getElementById('sidebar');
-  const ct=document.getElementById('content');
-  if(tab==='gen'){
-    ct.classList.add('mob-show');
-    sb.classList.remove('mob-show');
-  } else {
-    ct.classList.remove('mob-show');
-    sb.classList.add('mob-show');
-    // show only the right card
-    const map={keys:'sKeys',niche:'sNiche',format:'sFormat',tips:'sTips'};
-    ['sKeys','sNiche','sFormat','sTips'].forEach(id=>{
-      document.getElementById(id)?.classList.toggle('show',id===map[tab]);
-    });
-  }
+function selectPillar(id) {
+  selPillar = PILLARS.find(p=>p.id===id);
+  renderPillars();
 }
 
-/* ══ NICHES ═════════════════════════════════════════════ */
-function renderNiches(){
-  document.getElementById('nicheGrid').innerHTML=NICHES.map(n=>`
-    <button class="niche-pill${n.id===selNiche?' active':''}"
-      style="${n.id===selNiche?`--acc:${n.color};--acc-bg:${n.color}18`:''}"
-      onclick="pickNiche('${n.id}','${n.color}')">${n.label}</button>`).join('');
-}
-function pickNiche(id,color){
-  selNiche=id;
-  document.documentElement.style.setProperty('--acc',color);
-  document.documentElement.style.setProperty('--acc-bg',color+'18');
-  document.documentElement.style.setProperty('--acc-glow',color+'30');
-  renderNiches();
-  document.getElementById('nicheLabel').textContent='Niche: '+(NICHES.find(n=>n.id===id)?.label||'Auto');
+/* ════════════════════════════════════════════
+   FORMAT
+════════════════════════════════════════════ */
+function selectFmt(f) {
+  selFmt = f;
+  document.getElementById('fmt-single').classList.toggle('sel', f==='single');
+  document.getElementById('fmt-thread').classList.toggle('sel', f==='thread');
 }
 
-/* ══ FORMAT ═════════════════════════════════════════════ */
-function setFmt(fmt){
-  selFmt=fmt;
-  document.getElementById('fmtA').classList.toggle('active',fmt==='single');
-  document.getElementById('fmtB').classList.toggle('active',fmt==='thread');
-  document.getElementById('fmtLabel').textContent='Format: '+(fmt==='single'?'Single':'Thread ×5');
+/* ════════════════════════════════════════════
+   RENDER — SCHEDULE
+════════════════════════════════════════════ */
+function renderDays() {
+  document.getElementById('daysRow').innerHTML = schedule.map((d,i) => `
+    <div class="day-pill ${i===activeDay?'sel':''}" onclick="selectDay(${i})">
+      <div class="day-num">D${d.day}</div>
+      <div class="day-name">${d.label}</div>
+    </div>`).join('');
+}
+function selectDay(i) { activeDay=i; renderDays(); renderSlots(); }
+
+function renderSlots() {
+  document.getElementById('slotsContainer').innerHTML = schedule[activeDay].slots.map((slot, si) => {
+    const key = `${activeDay}-${si}`;
+    return `
+    <div class="slot-card" id="slotcard-${key}">
+      <div class="slot-head">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="slot-time">${slot.time}</span>
+          <span class="slot-pillar" style="color:${slot.pillar.color};border-color:${slot.pillar.color}55;background:${slot.pillar.color}10">
+            ${slot.pillar.label}
+          </span>
+        </div>
+        <div class="slot-actions">
+          ${slot.tweet && !slot.generating
+            ? `<button class="btn-sm" id="scopy-${key}" onclick="copySlotTweet('${key}')">Copy</button>`
+            : ''}
+          <button class="btn-sm" id="sgen-${key}"
+            onclick="genSlotClick(${activeDay},${si})"
+            ${genSlot?'disabled':''}>
+            ${slot.generating ? '<span class="spinner"></span>' : slot.tweet ? '↺ Regen' : 'Generate'}
+          </button>
+        </div>
+      </div>
+      <div class="slot-body ${slot.generating?'slot-gen':''} ${!slot.tweet&&!slot.generating?'slot-empty':''}">
+        ${slot.generating
+          ? 'Generating...<span class="cursor">▋</span>'
+          : slot.tweet
+            ? escHtml(slot.tweet) + (slot.provider ? `<br><br><span style="font-size:9px;opacity:0.45">via ${slot.provider}</span>` : '')
+            : 'Not generated yet'}
+      </div>
+    </div>`;
+  }).join('');
 }
 
-/* ══ KEYS ═══════════════════════════════════════════════ */
-function saveKeys(){
-  [1,2,3].forEach(i=>{
-    const v=document.getElementById('k'+i).value.trim();
-    v?localStorage.setItem('tf_k'+i,v):localStorage.removeItem('tf_k'+i);
-  });
-  updDots();toast('Keys saved ✓');
-}
-function loadKeys(){
-  [1,2,3].forEach(i=>{
-    const s=localStorage.getItem('tf_k'+i);
-    if(s) document.getElementById('k'+i).value=s;
-  });
-  updDots();
-}
-function getKeys(){return[1,2,3].map(i=>localStorage.getItem('tf_k'+i)).filter(Boolean)}
-function updDots(){
-  [1,2,3].forEach(i=>{
-    document.getElementById('kd'+i).className='key-dot '+(localStorage.getItem('tf_k'+i)?'ok':'');
-  });
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-/* ══ MODEL CHIPS ════════════════════════════════════════ */
-function setMC(idx,status){
-  MODELS.forEach((m,i)=>{
-    const el=document.getElementById(m.id);
-    const dot=el.querySelector('.mdot');
-    el.className='mchip';dot.className='mdot';
-    if(i===idx){el.classList.add(status);if(status==='active')dot.classList.add('spin');}
-  });
+/* ════════════════════════════════════════════
+   RENDER — STRATEGY
+════════════════════════════════════════════ */
+function renderStrategy() {
+  document.getElementById('playbookRows').innerHTML = PLAYBOOK.map(r => `
+    <div class="strat-row">
+      <div class="strat-key">${r.k}</div>
+      <div class="strat-val">${r.v}</div>
+    </div>`).join('');
+
+  document.getElementById('rotationRows').innerHTML = schedule.map((d,i) => {
+    const p = PILLARS[i % PILLARS.length];
+    return `<div class="rotation-row">
+      <span class="rot-day">Day ${d.day} — ${d.label}</span>
+      <span class="rot-pillar" style="color:${p.color};border-color:${p.color}50;background:${p.color}10">${p.label}</span>
+      <span class="rot-note">+ 2 support posts</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('killRows').innerHTML = KILL_LIST.map(k => `
+    <div class="kill-row">
+      <span class="kill-x">✗</span>
+      <span class="kill-txt">${k}</span>
+    </div>`).join('');
 }
-function resetMC(){MODELS.forEach((_,i)=>setMC(i,''));}
 
-/* ══ GROQ CALL ══════════════════════════════════════════ */
-async function groqCall(apiKey, modelName, mi, messages){
-  setMC(mi,'active');
-  logErr(''); // clear error log
+/* ════════════════════════════════════════════
+   GROQ — 3-MODEL FALLBACK
+════════════════════════════════════════════ */
+function setChip(idx, status) {
+  const chip = document.getElementById('chip-'+(idx+1));
+  if(!chip) return;
+  chip.className = 'model-chip ' + status;
+  const dot = chip.querySelector('.mdot');
+  dot.classList.toggle('pulse', status==='active');
+}
 
-  const resp = await fetch(GROQ_URL, {
+async function callGroqModel(model, prompt, apiKey) {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + apiKey,
+      'Authorization': 'Bearer ' + apiKey
     },
     body: JSON.stringify({
-      model: modelName,
-      max_tokens: 800,
-      temperature: 0.92,
-      top_p: 0.95,
-      frequency_penalty: 0.5,
-      presence_penalty: 0.4,
-      messages: messages
+      model: model.name,
+      max_tokens: 1200,
+      temperature: 0.88,
+      messages: [{ role:'user', content: prompt }]
     })
   });
-
-  const data = await resp.json();
-
-  if(!resp.ok){
-    setMC(mi,'err');
-    const msg = data?.error?.message || `HTTP ${resp.status}`;
-    throw new Error(`[${MODELS[mi].label}] ${msg}`);
+  if(!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.error?.message || `HTTP ${res.status}`);
   }
-
-  setMC(mi,'ok');
-  const text = data?.choices?.[0]?.message?.content;
-  if(!text) throw new Error(`[${MODELS[mi].label}] Empty response`);
-  return text.trim();
+  const data = await res.json();
+  return data.choices[0].message.content.trim();
 }
 
-/* ══ FALLBACK CHAIN ═════════════════════════════════════ */
-async function generateFallback(messages){
-  const keys=getKeys();
-  if(!keys.length) throw new Error('NO_KEY');
+async function generateWithFallback(prompt) {
+  const key = localStorage.getItem('xbot_groq') || '';
+  if(!key) throw new Error('No Groq API key. Add it in the ⚙ KEYS tab.');
 
-  const errors=[];
-
-  for(let mi=0;mi<MODELS.length;mi++){
-    for(let ki=0;ki<keys.length;ki++){
-      try{
-        const text=await groqCall(keys[ki],MODELS[mi].name,mi,messages);
-        return {text,model:MODELS[mi].label,ki:ki+1};
-      } catch(e){
-        const msg=`Model ${MODELS[mi].label} / Key ${ki+1}: ${e.message}`;
-        errors.push(msg);
-        console.warn(msg);
-        await new Promise(r=>setTimeout(r,200));
-      }
+  let lastErr = null;
+  for(let i=0; i<GROQ_MODELS.length; i++) {
+    const model = GROQ_MODELS[i];
+    // Reset all to ok first pass
+    GROQ_MODELS.forEach((_,j) => { if(j!==i) setChip(j,'ok'); });
+    setChip(i,'active');
+    try {
+      const text = await callGroqModel(model, prompt, key);
+      setChip(i,'ok');
+      return { text, provider: model.name.split('/').pop() };
+    } catch(e) {
+      console.warn(`[Model ${i+1}] ${model.name} failed:`, e.message);
+      setChip(i,'error');
+      lastErr = e;
+      await new Promise(r=>setTimeout(r,250));
     }
-    setMC(mi,'err');
   }
-
-  throw new Error('ALL_FAILED\n\nAttempts:\n'+errors.join('\n'));
+  GROQ_MODELS.forEach((_,j) => setChip(j,'error'));
+  throw new Error('All 3 models failed. Last: ' + lastErr?.message);
 }
 
-/* ══ GENERATE ═══════════════════════════════════════════ */
-async function handleGenerate(){
-  if(isGen)return;
-  const keys=getKeys();
-  if(!keys.length){
-    logErr('No API key found.\nGo to the Keys tab → paste your Groq key → tap Save Keys.\nGet a free key at console.groq.com/keys');
-    toast('⚠ No key saved — check Keys tab');
-    return;
+/* ════════════════════════════════════════════
+   PROMPT BUILDER
+════════════════════════════════════════════ */
+const ALGO = `You are an elite X (Twitter) content strategist for a monetized Nigerian tech creator in 2026.
+
+2026 ALGORITHM RULES:
+- Engagement velocity in first 30-60 min drives reach
+- Replies weighted 27× stronger than likes
+- Bookmarks carry 10× algo weight — write save-worthy content
+- Threads (3+ tweets) get automatic 3× impressions
+- External links in main tweet KILL reach (put in replies)
+- Hashtags are spam signals in 2026 — never use them
+- Premium/verified user engagement counts more toward payouts
+- Post 3× daily at consistent times
+- Nigerian/local content gets regional algo boost
+- AI-spam patterns are detected and suppressed
+
+CREATOR PROFILE:
+- Nigerian tech creator, monetized on X Premium
+- Niche: tech meets hustle, street wisdom meets digital economy
+- Audience: Lagos millennials, devs, startup founders, African diaspora
+- Voice: raw, confident, real — never corporate or robotic
+- Goal: maximize verified Premium impressions for bi-weekly payout`;
+
+function buildPrompt(pillar, fmt, custom) {
+  const angle = custom?.trim() ? `\nSpecific angle: ${custom.trim()}` : '';
+  if(fmt === 'thread') {
+    return `${ALGO}
+
+TASK: 5-tweet thread for the "${pillar.label}" pillar.${angle}
+
+Output this format exactly, nothing else before or after:
+
+TWEET 1 (HOOK):
+[hard hook — shocking stat, bold claim, or relatable pain. Under 240 chars. No emoji spam.]
+
+TWEET 2:
+[context or "why this matters". Under 280 chars.]
+
+TWEET 3:
+[the main insight, list, or framework. Under 280 chars.]
+
+TWEET 4:
+[proof, story beat, or specific example. Under 280 chars.]
+
+TWEET 5 (CTA):
+[end with a direct easy-to-answer question. Invite replies. Under 280 chars.]
+
+Rules: Nigerian tech voice. Raw and real. Zero hashtags. Zero external links.`;
   }
+  return `${ALGO}
 
-  isGen=true;resetMC();logErr('');
-  const btn=document.getElementById('genBtn');
-  const inner=document.getElementById('genInner');
-  btn.disabled=true;
-  inner.innerHTML='<div class="spin"></div><span>Forging...</span>';
+TASK: One powerful single tweet for the "${pillar.label}" pillar.${angle}
 
-  const tone=parseInt(document.getElementById('toneSlider').value);
-  const custom=document.getElementById('promptInput').value;
-  const messages=[
-    {role:'system',content:SYSTEM_PROMPT},
-    {role:'user',  content:buildUserMsg(selNiche,selFmt,tone,custom)}
-  ];
+Rules:
+- First 7 words = the hook — must stop the scroll cold
+- Max 280 characters total
+- End with a direct question OR a bold statement that demands replies
+- ZERO hashtags
+- ZERO external links in the tweet
+- Nigerian tech voice — raw, confident, not corporate
+- Must be either BOOKMARK-worthy (insight worth saving) OR REPLY-BAIT (must respond)
+- Sound like a human who genuinely lives this, not an AI
 
-  try{
-    const {text,model,ki}=await generateFallback(messages);
-    totalCount++;
-    document.getElementById('genCount').innerHTML=`<b>${totalCount}</b> tweet${totalCount!==1?'s':''}`;
-    renderOutput(text,model,ki);
-    addHist(text);
-    document.getElementById('emptyState')?.remove();
-    logErr('');
-  } catch(e){
-    if(e.message.startsWith('NO_KEY')){
-      logErr('No API key saved.\nGo to Keys tab → paste your Groq key → Save Keys.');
-    } else if(e.message.startsWith('ALL_FAILED')){
-      logErr('All models and keys failed.\n\n'+e.message.replace('ALL_FAILED\n\n',''));
-    } else {
-      logErr('Unexpected error:\n'+e.message);
-    }
-    resetMC();
-  }
-
-  btn.disabled=false;
-  inner.innerHTML='<span>✦</span><span>GENERATE TWEET</span>';
-  isGen=false;
+Output: Just the tweet text. Nothing else. No quotes around it.`;
 }
 
-/* ══ ERROR LOG ══════════════════════════════════════════ */
-function logErr(msg){
-  const el=document.getElementById('errLog');
-  if(!msg){el.classList.remove('show');el.textContent='';return;}
-  el.textContent='⚠ '+msg;
-  el.classList.add('show');
+/* ════════════════════════════════════════════
+   TYPEWRITER
+════════════════════════════════════════════ */
+function typewrite(el, text, speed=9) {
+  let i=0;
+  el.innerHTML='';
+  const iv = setInterval(()=>{
+    i++;
+    el.innerHTML = text.slice(0,i).replace(/\n/g,'<br>') + (i<text.length?'<span class="cursor">▋</span>':'');
+    if(i>=text.length) clearInterval(iv);
+  }, speed);
 }
 
-/* ══ RENDER OUTPUT ══════════════════════════════════════ */
-function renderOutput(text,model,ki){
-  const isThread=selFmt==='thread'||/^1\//.test(text.trim());
-  const n=NICHES.find(x=>x.id===selNiche)||NICHES[0];
-  const id='tc'+Date.now();
-  const len=text.length;
-  const cc=len>270?'var(--red)':len>240?'var(--amb)':'var(--grn)';
+/* ════════════════════════════════════════════
+   CHAR COLOR
+════════════════════════════════════════════ */
+function cc(n) { return n>260?'#f03e5e':n>230?'#f5a623':'#00c896'; }
 
-  const card=document.createElement('div');
-  card.className='tweet-card'+(isThread?' is-thread':'');
-  card.id=id;
-
-  const meta=`<div class="tweet-meta">
-    <div class="tw-tag" style="background:${n.color}18;color:${n.color};border-color:${n.color}30">${n.label}${isThread?' · THREAD':''}</div>
-    <div class="tw-actions">
-      ${!isThread?`<span class="char-badge" style="color:${cc};border-color:${cc}40">${Math.min(len,280)}/280</span>`:''}
-      <span class="via-tag">${model}·k${ki}</span>
-      <button class="action-btn" onclick="cpTweet('${id}',this)">${isThread?'Copy All':'Copy'}</button>
-      <button class="action-btn regen" onclick="handleGenerate()">↺ New</button>
-    </div>
-  </div>`;
-
-  if(isThread){
-    const parts=parseThread(text);
-    card.innerHTML=meta+`<div class="thread-list" id="body-${id}">
-      ${parts.map((t,i)=>`<div class="th-tweet"><div class="th-n">${i+1}/</div><div class="th-txt">${esc(t)}</div></div>`).join('')}
-    </div>`;
-  } else {
-    card.innerHTML=meta+`<div class="tweet-body" id="body-${id}"></div>`;
-  }
-
-  const area=document.getElementById('outputArea');
-  area.insertBefore(card,area.firstChild);
-  if(!isThread) typewrite(document.getElementById('body-'+id),text);
-
-  // Keep max 10
-  const cards=area.querySelectorAll('.tweet-card');
-  if(cards.length>10) cards[cards.length-1].remove();
-}
-
-function parseThread(txt){
-  const lines=txt.split('\n');
-  const out=[];let cur=[];
-  for(const l of lines){
-    if(/^\d+\//.test(l.trim())&&cur.length){out.push(cur.join('\n').trim());cur=[l.replace(/^\d+\/\s*/,'')];}
-    else if(/^\d+\//.test(l.trim())){cur=[l.replace(/^\d+\/\s*/,'')];}
-    else cur.push(l);
-  }
-  if(cur.length) out.push(cur.join('\n').trim());
-  return out.length>=2?out:txt.split(/\n\n+/).filter(Boolean);
-}
-
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
-
-function typewrite(el,text,spd=11){
-  let i=0;el.textContent='';
-  const iv=setInterval(()=>{
-    i=Math.min(i+Math.ceil(text.length/65),text.length);
-    el.textContent=text.slice(0,i);
-    if(i>=text.length)clearInterval(iv);
-  },spd);
-}
-
-/* ══ COPY ═══════════════════════════════════════════════ */
-function cpTweet(id,btn){
-  const body=document.getElementById('body-'+id);
-  const parts=body.querySelectorAll('.th-txt');
-  const text=parts.length
-    ?Array.from(parts).map((e,i)=>`${i+1}/ ${e.innerText}`).join('\n\n')
-    :body.innerText||body.textContent;
+/* ════════════════════════════════════════════
+   COPY HELPER
+════════════════════════════════════════════ */
+function copyAndFlash(text, btnId) {
   navigator.clipboard.writeText(text).then(()=>{
-    const orig=btn.textContent;
-    btn.textContent='✓ Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied')},2000);
-  }).catch(()=>{
-    // fallback for older mobile browsers
-    const ta=document.createElement('textarea');
-    ta.value=text;document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);
-    btn.textContent='✓ Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent=parts.length?'Copy All':'Copy';btn.classList.remove('copied')},2000);
+    const b = document.getElementById(btnId);
+    if(!b) return;
+    const orig = b.textContent;
+    b.textContent = '✓ Copied';
+    b.classList.add('copied');
+    setTimeout(()=>{ b.textContent=orig; b.classList.remove('copied'); },2000);
   });
 }
 
-/* ══ HISTORY ════════════════════════════════════════════ */
-function addHist(text){
-  hist.unshift({t:text.slice(0,110),ts:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
-  if(hist.length>20)hist.pop();
-  localStorage.setItem('tf_h',JSON.stringify(hist));
-  renderHist();
-}
-function renderHist(){
-  if(!hist.length)return;
-  document.getElementById('histCard').style.display='block';
-  document.getElementById('histList').innerHTML=hist.map((h,i)=>`
-    <div class="hist-item" onclick="loadHist(${i})">
-      <div class="hist-txt">${esc(h.t.replace(/\n/g,' '))}</div>
-      <div class="hist-time">${h.ts}</div>
-    </div>`).join('');
-}
-function loadHist(i){document.getElementById('promptInput').value=hist[i].t.slice(0,120)}
-function clearHist(){
-  hist=[];localStorage.removeItem('tf_h');
-  document.getElementById('histCard').style.display='none';
+function copySlotTweet(key) {
+  const [di,si] = key.split('-').map(Number);
+  const tw = schedule[di].slots[si].tweet;
+  if(tw) copyAndFlash(tw, 'scopy-'+key);
 }
 
-/* ══ TOAST ══════════════════════════════════════════════ */
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
-}
+/* ════════════════════════════════════════════
+   MAIN GENERATE
+════════════════════════════════════════════ */
+async function handleGenerate() {
+  if(isGenerating) return;
+  isGenerating = true;
 
-/* ══ RESIZE GUARD ═══════════════════════════════════════ */
-window.addEventListener('resize',()=>{
-  if(window.innerWidth>=768){
-    document.getElementById('sidebar').classList.remove('mob-show');
-    document.getElementById('content').classList.add('mob-show');
-    ['sKeys','sNiche','sFormat','sTips'].forEach(id=>{
-      document.getElementById(id)?.classList.remove('show');
-    });
-  } else {
-    mobTab(mobActive,false);
+  const btn = document.getElementById('mainGenBtn');
+  const out = document.getElementById('mainOutput');
+  const custom = document.getElementById('customPrompt').value;
+  const prompt = buildPrompt(selPillar, selFmt, custom);
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> GENERATING...';
+  out.style.display = 'none';
+
+  try {
+    const {text, provider} = await generateWithFallback(prompt);
+    totalGen++;
+    document.getElementById('totalCount').textContent = totalGen;
+
+    const isThread = selFmt === 'thread';
+    const len = text.length;
+
+    out.style.display = 'block';
+    out.innerHTML = `
+      <div class="output-card">
+        <div class="output-meta">
+          <span class="output-pillar-tag" style="color:${selPillar.color};border-color:${selPillar.color}55;background:${selPillar.color}10">
+            ${selPillar.label} · ${selFmt.toUpperCase()}
+          </span>
+          <div class="output-actions">
+            ${!isThread?`<span class="char-pill" style="color:${cc(len)};border-color:${cc(len)}50">${len}/280</span>`:''}
+            <button class="btn-sm" id="mainCopyBtn" onclick="copyAndFlash(document.getElementById('outText').innerText,'mainCopyBtn')">
+              Copy
+            </button>
+          </div>
+        </div>
+        <div class="output-text" id="outText"></div>
+        <div class="output-footer">
+          <span class="algo-badge green">✓ Hook First</span>
+          <span class="algo-badge green">✓ No Hashtags</span>
+          <span class="algo-badge green">✓ No Links</span>
+          <span class="algo-badge green">✓ Reply Bait</span>
+          <span class="algo-badge warn">⚑ Engage 30 min post</span>
+          <span class="provider-badge">via ${provider}</span>
+        </div>
+      </div>`;
+    typewrite(document.getElementById('outText'), text, 8);
+
+  } catch(err) {
+    out.style.display = 'block';
+    out.innerHTML = `
+      <div class="output-card" style="border-color:var(--red)">
+        <div style="color:var(--red);font-family:var(--font-sans);font-size:13px;font-weight:600;margin-bottom:6px">
+          ⚠ Generation Failed
+        </div>
+        <div style="color:var(--text2);font-family:var(--font-mono);font-size:11px;line-height:1.6">
+          ${err.message}
+        </div>
+        <div style="color:var(--text3);font-family:var(--font-mono);font-size:10px;margin-top:8px">
+          Check your Groq key in the ⚙ KEYS tab.
+        </div>
+      </div>`;
   }
-});
 
+  btn.disabled = false;
+  btn.innerHTML = '⚡ GENERATE TWEET';
+  isGenerating = false;
+}
+
+/* ════════════════════════════════════════════
+   SLOT GENERATE
+════════════════════════════════════════════ */
+async function genSlotClick(dayIdx, slotIdx) {
+  if(genSlot) return;
+  await runSlotGen(dayIdx, slotIdx);
+}
+
+async function runSlotGen(dayIdx, slotIdx) {
+  const key = `${dayIdx}-${slotIdx}`;
+  genSlot = key;
+  const slot = schedule[dayIdx].slots[slotIdx];
+  slot.generating = true;
+  renderSlots();
+  document.getElementById('allDayBtn').disabled = true;
+
+  try {
+    const prompt = buildPrompt(slot.pillar, 'single', '');
+    const {text, provider} = await generateWithFallback(prompt);
+    slot.tweet = text;
+    slot.provider = provider;
+    totalGen++;
+    document.getElementById('totalCount').textContent = totalGen;
+  } catch(e) {
+    slot.tweet = '⚠ Failed: ' + e.message;
+  }
+
+  slot.generating = false;
+  genSlot = null;
+  document.getElementById('allDayBtn').disabled = false;
+  renderSlots();
+}
+
+async function generateAllDay() {
+  if(genSlot) return;
+  for(let i=0; i<3; i++) await runSlotGen(activeDay, i);
+}
+
+/* ════════════════════════════════════════════
+   KEYS
+════════════════════════════════════════════ */
+function saveKeys() {
+  const val = document.getElementById('key-groq').value.trim();
+  if(val) localStorage.setItem('xbot_groq', val);
+  const msg = document.getElementById('saveMsg');
+  msg.style.display = 'block';
+  setTimeout(()=>msg.style.display='none', 2800);
+}
+function loadKeys() {
+  const saved = localStorage.getItem('xbot_groq');
+  if(saved) document.getElementById('key-groq').value = saved;
+}
+
+/* ════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+function init() {
+  loadTheme();
+  loadKeys();
+  renderPillars();
+  renderDays();
+  renderSlots();
+  renderStrategy();
+}
 init();
 </script>
 </body>
